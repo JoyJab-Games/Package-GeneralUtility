@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
     public partial class TweenInfo {
-        
+
         /// <summary> True as long as the tween is still executing </summary>
-        public bool Running { get; internal set; }
+        public bool Running { get; internal set; } = true;
                 
         /// <summary> The Action that will be invoked once the tween finishes executing </summary>
         internal readonly GenericAction _onFinish = new GenericAction();

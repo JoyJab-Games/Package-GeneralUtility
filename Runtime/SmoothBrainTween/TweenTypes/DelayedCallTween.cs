@@ -19,7 +19,7 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
             TimeTracker time = new TimeTracker(info, duration);
             yield return new WaitForEndOfFrame();
 
-            while (time.Running && !info.Running) {
+            while (time.Running && info.Running) {
                 info._onUpdate.Invoke(time.PercentProgress);
                 yield return time.Advance();
             }

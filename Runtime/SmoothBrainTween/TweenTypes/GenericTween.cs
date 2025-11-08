@@ -18,7 +18,7 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
             
             setup?.Invoke();
 
-            while (time.Running && !info.Running) {
+            while (time.Running && info.Running) {
                 float progress = info.Easing(time.PercentProgress);
                 float remappedProgress = remapValue.Invoke(progress);
                 InvokeCancelOnError(info, () => update?.Invoke(remappedProgress));
