@@ -17,6 +17,8 @@ public class MinMaxSliderDrawer : PropertyDrawer {
         
         Rect[] splittedRect = SplitRect(controlRect,3);
 
+        int oldIndent = EditorGUI.indentLevel;
+        EditorGUI.indentLevel = 0;
         if(propertyType == SerializedPropertyType.Vector2){ 
 
             EditorGUI.BeginChangeCheck();
@@ -31,6 +33,7 @@ public class MinMaxSliderDrawer : PropertyDrawer {
 
             EditorGUI.MinMaxSlider(splittedRect[1], ref minVal, ref maxVal,
             minMaxAttribute.min,minMaxAttribute.max);
+            
 
             if(minVal < minMaxAttribute.min){
                 minVal = minMaxAttribute.min;
@@ -75,7 +78,7 @@ public class MinMaxSliderDrawer : PropertyDrawer {
             }
 
         } 
-
+        EditorGUI.indentLevel = oldIndent;
     }
 
     Rect[] SplitRect(Rect rectToSplit, int n){
@@ -100,7 +103,6 @@ public class MinMaxSliderDrawer : PropertyDrawer {
 
         rects[2].x += padding + space;
         
-
         return rects;
 
     }

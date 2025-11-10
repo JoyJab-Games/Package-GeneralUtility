@@ -21,5 +21,9 @@ namespace Beta.Devtools {
             Enabled = enabled;
             Value = initialValue;
         }
+
+        public static implicit operator Optional<T>(T value) => new(value, true);
+        public static implicit operator Optional<T>(bool value) => new(default, value);
+        public static implicit operator T(Optional<T> value) => value.Value;
     }
 }
