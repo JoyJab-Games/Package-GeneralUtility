@@ -103,11 +103,11 @@ namespace Beta.Audio {
             _isFading = true;
 
             //FadeOut
-            wrapperOut.FadeTween = SmoothBrainTween.Value(wrapperOut.Source.volume, 0, _fadeTime)
+            wrapperOut.FadeTween = ManyWrinkleTween.Value(wrapperOut.Source.volume, 0, _fadeTime)
                 .SetOnUpdate((value) => wrapperOut.Source.volume = value);
 
             //FadeIn
-            wrapper.FadeTween = SmoothBrainTween.Value(0, inVolume, _fadeTime)
+            wrapper.FadeTween = ManyWrinkleTween.Value(0, inVolume, _fadeTime)
                 .SetOnUpdate((value) => wrapper.Source.volume = value)
                 .SetOnFinish(() => _isFading = false);
         }
@@ -124,7 +124,7 @@ namespace Beta.Audio {
                 }
             }
 
-            _source[pos].FadeTween = SmoothBrainTween.Value(_source[pos].Source.volume, 0, _fadeTime)
+            _source[pos].FadeTween = ManyWrinkleTween.Value(_source[pos].Source.volume, 0, _fadeTime)
                 .SetOnUpdate((value) => _source[pos].Source.volume = value)
                 .SetOnFinish(() => {
                     foreach(SoundSourceWrapper wrapper in _source) {

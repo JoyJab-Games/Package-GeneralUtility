@@ -22,7 +22,7 @@ namespace Plugins.Audio.AudioManagers {
 
         /// <summary> Resets the audio source so this wrapper can play something again </summary>
         public void ReleaseSource() {
-            if (FadeTween is {Running: true}) SmoothBrainTween.Cancel(FadeTween);
+            if (FadeTween is {Running: true}) ManyWrinkleTween.Cancel(ref FadeTween);
             Source.Stop();
             Source.volume = 0;
         }
