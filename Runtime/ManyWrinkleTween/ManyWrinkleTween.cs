@@ -1,3 +1,4 @@
+using JescoDev.Utility.EventUtility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,14 +42,14 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
             while (isActiveAndEnabled) {
                 for (int i = 0; i < _runningTweens.Count; i++) {
                     if (!_runningTweens[i].Timer.Running) {
-                        _runningTweens[i].Function.Invoke(_runningTweens[i], _runningTweens[i].Timer.CompletedLoops % 2);
+                        _runningTweens[i].Function.TryInvoke(_runningTweens[i], _runningTweens[i].Timer.CompletedLoops % 2);
                         _runningTweens[i].Info._onFinish.Invoke();
                         continue;
                     }
                     
                     float progress = _runningTweens[i].Timer.PercentProgress;
                     float progressRemapped = _runningTweens[i].Info.Easing(progress);
-                    _runningTweens[i].Function.Invoke(_runningTweens[i], progressRemapped);
+                    _runningTweens[i].Function.TryInvoke(_runningTweens[i], progressRemapped);
                     _runningTweens[i].Info._onUpdate.Invoke(progress);
                 }
                 

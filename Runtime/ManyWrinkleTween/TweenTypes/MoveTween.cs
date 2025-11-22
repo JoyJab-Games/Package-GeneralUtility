@@ -12,6 +12,11 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
         }
 
         private static void ApplyMove(TweenInstance instance, float progress) {
+            if (instance.Target == null) {
+                instance.Info.Running = false;
+                return;
+            }
+            
             Vector3 currentPosition = Vector3.LerpUnclamped(instance.StartData, instance.TargetData, progress);
             instance.Target.position = currentPosition;
         }
@@ -22,6 +27,11 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
             return _instance.AddNewTween(duration, target, startPosition, targetAnchored, ApplyMoveRect);
         }
         private static void ApplyMoveRect(TweenInstance instance, float progress) {
+            if (instance.Target == null) {
+                instance.Info.Running = false;
+                return;
+            }
+            
             Vector3 currentPosition = Vector3.LerpUnclamped(instance.StartData, instance.TargetData, progress);
             ((RectTransform)instance.Target).anchoredPosition = currentPosition;
         }

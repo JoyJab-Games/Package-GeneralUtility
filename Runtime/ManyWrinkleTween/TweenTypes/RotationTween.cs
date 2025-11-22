@@ -10,6 +10,11 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
         }
 
         private static void ApplyRotation(TweenInstance instance, float progress) {
+            if (instance.Target == null) {
+                instance.Info.Running = false;
+                return;
+            }
+            
             Quaternion from = new(instance.StartData.x, instance.StartData.y, instance.StartData.z, instance.StartData.w);
             Quaternion to = new(instance.TargetData.x, instance.TargetData.y, instance.TargetData.z, instance.TargetData.w);
             instance.Target.rotation = Quaternion.LerpUnclamped(from, to, progress);
@@ -23,6 +28,11 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
         }
 
         private static void ApplyRotationLocal(TweenInstance instance, float progress) {
+            if (instance.Target == null) {
+                instance.Info.Running = false;
+                return;
+            }
+            
             Quaternion from = new(instance.StartData.x, instance.StartData.y, instance.StartData.z, instance.StartData.w);
             Quaternion to = new(instance.TargetData.x, instance.TargetData.y, instance.TargetData.z, instance.TargetData.w);
             instance.Target.localRotation = Quaternion.LerpUnclamped(from, to, progress);

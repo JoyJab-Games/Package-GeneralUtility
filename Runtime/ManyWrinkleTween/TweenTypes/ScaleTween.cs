@@ -11,6 +11,10 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
         }
 
         private static void ApplyScale(TweenInstance instance, float progress) {
+            if (instance.Target == null) {
+                instance.Info.Running = false;
+                return;
+            }
             Vector3 currentScale = Vector3.LerpUnclamped(instance.StartData, instance.TargetData, progress);
             instance.Target.localScale = currentScale;
         }
