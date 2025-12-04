@@ -9,7 +9,7 @@ namespace Plugins.Audio.AudioManagers {
 
         public AudioSource Source { get; private set; }
 
-        public TweenInfo FadeTween;
+        public TweenHandle FadeTween;
 
         public bool IsPlaying => Source.isPlaying;
 
@@ -22,7 +22,7 @@ namespace Plugins.Audio.AudioManagers {
 
         /// <summary> Resets the audio source so this wrapper can play something again </summary>
         public void ReleaseSource() {
-            if (FadeTween is {Running: true}) ManyWrinkleTween.Cancel(ref FadeTween);
+            ManyWrinkleTween.Cancel(FadeTween);
             Source.Stop();
             Source.volume = 0;
         }

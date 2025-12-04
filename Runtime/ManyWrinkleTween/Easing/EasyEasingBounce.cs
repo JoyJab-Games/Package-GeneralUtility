@@ -12,14 +12,14 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
         }
         
         public static float EaseBounceIn(float x) => 1 - BounceFunction(1 - x);
-        public static TweenInfo SetEaseBounceIn(this TweenInfo info) => info.FuncWrapper(EaseBounceIn);
+        public static TweenHandle SetEaseBounceIn(this TweenHandle info) => info.FuncWrapper(EaseBounceIn);
         
         public static float EaseBounceOut(float x) => BounceFunction(x);
-        public static TweenInfo SetEaseBounceOut(this TweenInfo info) => info.FuncWrapper(EaseBounceOut);
+        public static TweenHandle SetEaseBounceOut(this TweenHandle info) => info.FuncWrapper(EaseBounceOut);
         
         public static float EaseBounceInOut(float x) => x < 0.5
             ? (1 - BounceFunction(1 - 2 * x)) / 2
             : (1 + BounceFunction(2 * x - 1)) / 2;
-        public static TweenInfo SetEaseBounceInOut(this TweenInfo info) => info.FuncWrapper(EaseBounceInOut);
+        public static TweenHandle SetEaseBounceInOut(this TweenHandle info) => info.FuncWrapper(EaseBounceInOut);
     }
 }

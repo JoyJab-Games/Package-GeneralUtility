@@ -13,17 +13,8 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
         private static ManyWrinkleTween _internalInstance;
 
         /// <summary> </summary>
-        private List<TweenInstance> _runningTweens = new();
-
-        private ObjectPool<TweenInfo> _infoPool = new(CreateInfo, Prep);
-        private static TweenInfo CreateInfo() => new();
-        private static void Prep(TweenInfo info) {
-            info.Running = true;
-            info._onFinish.Clear();
-            info._onUpdate.Clear();
-            info.SetEaseLinear();
-            info.SetLoop(0);
-        }
+        private TweenInstance[] _tweens = Array.Empty<TweenInstance>();
+        private readonly Stack<int> _freeTweens = new();
 
         public enum UpdateMode { EveryFrame, FixedUpdate }
 
@@ -35,38 +26,52 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
             return target.AddComponent<ManyWrinkleTween>();
         }
 
-        private void OnEnable() => StartCoroutine(RunTweens());
+        private void OnEnable() {
+            _tweens = new TweenInstance[100];
+            _freeTweens.Clear();
+            for (int i = 0; i < _tweens.Length; i++) {
+                _freeTweens.Push(i);
+                _tweens[i].Generation = 1;
+            }
+            StartCoroutine(RunTweens());
+        }
 
         private IEnumerator RunTweens() {
             WaitForFixedUpdate fixedUpdate = new();
             while (isActiveAndEnabled) {
-                for (int i = 0; i < _runningTweens.Count; i++) {
-                    if (!_runningTweens[i].Timer.Running) {
-                        _runningTweens[i].Function.TryInvoke(_runningTweens[i], _runningTweens[i].Timer.CompletedLoops % 2);
-                        _runningTweens[i].Info._onFinish.Invoke();
+                for (int i = 0; i < _tweens.Length; i++) {
+                    if (!_tweens[i].Running) continue;
+                    
+                    float progress = _tweens[i].Timer.PercentProgress;
+                    float progressRemapped = _tweens[i].Easing(progress);
+                    if (!_tweens[i].Timer.Running) {
+                        try {
+                            ActionData data = _tweens[i].Function.Invoke(_tweens[i], progressRemapped);
+                            _tweens[i]._onFinish.Invoke(data);
+                        }
+                        catch { /* ignored */ }
+                        Cancel(i);
                         continue;
                     }
-                    
-                    float progress = _runningTweens[i].Timer.PercentProgress;
-                    float progressRemapped = _runningTweens[i].Info.Easing(progress);
-                    _runningTweens[i].Function.TryInvoke(_runningTweens[i], progressRemapped);
-                    _runningTweens[i].Info._onUpdate.Invoke(progress);
+                    try {
+                        ActionData actionData = _tweens[i].Function.Invoke(_tweens[i], progressRemapped);
+                        if(!actionData.Canceled) _tweens[i]._onUpdate.Invoke(actionData);
+                        else Cancel(i);
+                    }
+                    catch (Exception e) {
+                       Debug.LogException(e);
+                       Cancel(i);
+                    }
                 }
                 
-                _runningTweens.RemoveAll(instance => {
-                    if (instance.Info.Running && instance.Timer.Running) return false;
-                    _infoPool.Release(instance.Info);
-                    return true;
-                });
-                
-                for (int i = 0; i < _runningTweens.Count; i++) {
-                    TweenInstance FUCKTHIS = _runningTweens[i];
-                    FUCKTHIS.Timer.Advance(TweenUpdateMode switch {
+                for (int i = 0; i < _tweens.Length; i++) {
+                    TweenInstance brothaaaaa = _tweens[i];
+                    brothaaaaa.Timer.Advance(TweenUpdateMode switch {
                         UpdateMode.EveryFrame => Time.deltaTime,
                         UpdateMode.FixedUpdate => Time.fixedDeltaTime,
                         _ => throw new ArgumentOutOfRangeException()
                     });
-                    _runningTweens[i] = FUCKTHIS;
+                    _tweens[i] = brothaaaaa;
                 }
                 yield return TweenUpdateMode switch {
                     UpdateMode.EveryFrame => null,
@@ -77,18 +82,60 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
         }
 
 
-        internal TweenInfo AddNewTween(float duration, Transform target, Vector4 startData, Vector4 targetData, Action<TweenInstance, float> function) {
-            TweenInfo info = _infoPool.Get();
-            _runningTweens.Add(new TweenInstance(info, duration, target, startData, targetData, function));
-            return info;
+        internal TweenHandle AddNewTween(float duration, Transform target, Vector4 startData, Vector4 targetData, Func<TweenInstance, float, ActionData> function) {
+            if (_freeTweens.Count <= 0) {
+                int oldSize = _tweens.Length;
+                Array.Resize(ref _tweens, oldSize * 2);
+                for (int i = oldSize; i < _tweens.Length; i++) {
+                    _freeTweens.Push(i);
+                    _tweens[i].Generation = 1;
+                }
+            }
+            int index = _freeTweens.Pop();
+            int generation = _tweens[index].Generation; // use the current generation 
+            _tweens[index] = new TweenInstance(generation, duration, target, startData, targetData, function);
+            return new TweenHandle(index, generation);
+        }
+
+        internal static bool IsValidHandle(TweenHandle handle) {
+            if (handle.Index < 0 || handle.Index >= _instance._tweens.Length) return false;
+            if (handle.Generation == 0) return false;
+            return handle.Generation == _instance._tweens[handle.Index].Generation;
+        }
+        internal static ref TweenInstance TryGetTween(TweenHandle handle) {
+            if (IsValidHandle(handle)) return ref _instance._tweens[handle.Index];
+            throw new Exception("TweenHandle is invalid");
+        }
+
+        public static void ForceFinish(TweenHandle tween) {
+            if(!IsValidHandle(tween)) return;
+            ref TweenInstance instance = ref _instance._tweens[tween.Index];
+            _instance.Cancel(tween.Index, ref instance);
+            try {
+                float progressRemapped = instance.Easing(1f);
+                ActionData data = instance.Function.Invoke(instance, progressRemapped);
+                instance._onUpdate.Invoke(data);
+                instance._onFinish.Invoke(data);
+            }
+            catch { /* ignored */ }
         }
 
         /// <summary> Stops the provided Tween from running any further </summary>
         /// <param name="tween"> the tween you want to stop </param>
-        public static void Cancel(ref TweenInfo tween) {
-            if (tween == null) return;
-            tween.Running = false;
-            tween = null; // forcefully take the reference from you, because fuck you yeeeeeeeees i am so smart 
+        public static void Cancel(TweenHandle tween) {
+            if (!IsValidHandle(tween)) return;
+            _instance.Cancel(tween.Index);
+        }
+        private void Cancel(int index) {
+            ref TweenInstance instance = ref _tweens[index];
+            Cancel(index, ref instance);
+        }
+
+        private void Cancel(int index, ref TweenInstance instance) {
+            instance.Running = false;
+            instance.Generation++; // break old handle
+            if(instance.Generation == 0) instance.Generation++; // avoid 0 on overflow
+            _freeTweens.Push(index);
         }
     }
 }

@@ -3,50 +3,45 @@ using JescoDev.Utility.EventUtility;
 using UnityEngine;
 
 namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
-    public class GenericAction {
+    public readonly struct GenericAction {
         
-        private Action _baseAction;
-        private Action<float> _floatAction;
-        private Action<Vector3> _vector3Action;
+        private readonly Action _baseAction;
+        private readonly Action<float> _floatAction;
+        private readonly Action<Vector3> _vector3Action;
 
         public void Invoke() {
-            _baseAction?.TryInvoke();
-            _floatAction?.TryInvoke(0);
-            _vector3Action?.TryInvoke(Vector3.zero);
-            
+            _baseAction?.Invoke();
+            _floatAction?.Invoke(0);
+            _vector3Action?.Invoke(Vector3.zero);
         }
 
-        public void Invoke(float value) {
-            _baseAction?.TryInvoke();
-            _floatAction?.TryInvoke(value);
-            _vector3Action?.TryInvoke(new Vector3(value, value, value));
+        public void Invoke(ActionData value) {
+            _baseAction?.Invoke();
+            if(value.Value.HasValue) _floatAction?.Invoke(value.Value.Value);
+            if(value.Data.HasValue) _vector3Action?.Invoke(value.Data.Value);
         }
         
         public void Invoke(float floatValue, Vector3 vecValue) {
-            _baseAction?.TryInvoke();
-            _floatAction?.TryInvoke(floatValue);
-            _vector3Action?.TryInvoke(vecValue);
+            _baseAction?.Invoke();
+            _floatAction?.Invoke(floatValue);
+            _vector3Action?.Invoke(vecValue);
         }
-
-        internal void Clear() => ResetAllActions();
-        private void ResetAllActions() {
-            _baseAction = null;
+        
+        public GenericAction(Action action) {
+            _baseAction = action;
             _floatAction = null;
             _vector3Action = null;
         }
-        
-        public void SetAction(Action action) {
-            ResetAllActions();
-            _baseAction = action;
-        }
 
-        public void SetAction(Action<float> action) {
-            ResetAllActions();
+        public GenericAction(Action<float> action) {
+            _baseAction = null;
             _floatAction = action;
+            _vector3Action = null;
         }
         
-        public void SetAction(Action<Vector3> action) {
-            ResetAllActions();
+        public GenericAction(Action<Vector3> action) {
+            _baseAction = null;
+            _floatAction = null;
             _vector3Action = action;
         }
 

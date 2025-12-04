@@ -3,20 +3,38 @@ using UnityEngine;
 
 namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
     internal struct TweenInstance {
-        public TweenInfo Info;
-        public Action<TweenInstance, float> Function;
+        public int Generation;
+        /// <summary> True as long as the tween is still executing </summary>
+        public bool Running;
+        public Func<TweenInstance, float, ActionData> Function;
+        
         public Transform Target;
         public Vector4 StartData;
         public Vector4 TargetData;
         public TweenTimer Timer;
         
-        public TweenInstance(TweenInfo info, float duration, Transform target, Vector4 startData, Vector4 targetData, Action<TweenInstance, float> function) {
-            Info = info;
-            Timer = new TweenTimer(info, duration);
+        /// <summary> The Function defining the easing type </summary>
+        public Func<float, float> Easing;
+        
+        /// <summary> The Action that will be invoked once the tween finishes executing </summary>
+        internal GenericAction _onFinish;
+
+        /// <summary> The Action that will be invoked every time the tween updates </summary>
+        internal GenericAction _onUpdate;
+        
+        public TweenInstance(int generation, float duration, Transform target, Vector4 startData, Vector4 targetData, Func<TweenInstance, float, ActionData> function) {
+            Generation = generation;
+            Running = true;
+            Timer = new TweenTimer(duration);
+            
             Target = target;
             StartData = startData;
             TargetData = targetData;
             Function = function;
+            
+            Easing = x => x;
+            _onFinish = new GenericAction();
+            _onUpdate = new GenericAction();
         }
     }
 }
