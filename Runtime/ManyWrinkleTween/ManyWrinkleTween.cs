@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using Object = UnityEngine.Object;
 
 namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
     public partial class ManyWrinkleTween : MonoBehaviour {
@@ -81,20 +82,37 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
             }
         }
 
-
+        internal TweenHandle AddNewTween(float duration, Vector4 startData, Vector4 targetData, Func<TweenInstance, float, ActionData> function) {
+            int index = GetFreeTweenIndex(); 
+            int generation = _tweens[index].Generation; 
+            _tweens[index] = new TweenInstance(generation, duration, startData, targetData, function);
+            return new TweenHandle(index, generation);
+        }
+        
         internal TweenHandle AddNewTween(float duration, Transform target, Vector4 startData, Vector4 targetData, Func<TweenInstance, float, ActionData> function) {
-            if (_freeTweens.Count <= 0) {
-                int oldSize = _tweens.Length;
-                Array.Resize(ref _tweens, oldSize * 2);
-                for (int i = oldSize; i < _tweens.Length; i++) {
-                    _freeTweens.Push(i);
-                    _tweens[i].Generation = 1;
-                }
-            }
-            int index = _freeTweens.Pop();
-            int generation = _tweens[index].Generation; // use the current generation 
+            int index = GetFreeTweenIndex(); 
+            int generation = _tweens[index].Generation;
             _tweens[index] = new TweenInstance(generation, duration, target, startData, targetData, function);
             return new TweenHandle(index, generation);
+        }
+
+        internal TweenHandle AddNewTween(float duration, Object target, Vector4 startData, Vector4 targetData, Func<TweenInstance, float, ActionData> function) {
+            int index = GetFreeTweenIndex(); 
+            int generation = _tweens[index].Generation;
+            _tweens[index] = new TweenInstance(generation, duration, target, startData, targetData, function);
+            return new TweenHandle(index, generation);
+        }
+
+        private int GetFreeTweenIndex() {
+            if (_freeTweens.Count > 0) return _freeTweens.Pop();
+
+            int oldSize = _tweens.Length;
+            Array.Resize(ref _tweens, oldSize * 2);
+            for (int i = oldSize; i < _tweens.Length; i++) {
+                _freeTweens.Push(i);
+                _tweens[i].Generation = 1;
+            }
+            return _freeTweens.Pop();
         }
 
         internal static bool IsValidHandle(TweenHandle handle) {
