@@ -46,12 +46,12 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
                     float progress = _tweens[i].Timer.PercentProgress;
                     float progressRemapped = _tweens[i].Easing(progress);
                     if (!_tweens[i].Timer.Running) {
+                        Cancel(i);
                         try {
                             ActionData data = _tweens[i].Function.Invoke(_tweens[i], progressRemapped);
                             _tweens[i]._onFinish.Invoke(data);
                         }
                         catch { /* ignored */ }
-                        Cancel(i);
                         continue;
                     }
                     try {
