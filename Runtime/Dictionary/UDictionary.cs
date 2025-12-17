@@ -20,12 +20,15 @@ namespace JescoDev.Utility.Dictionary {
     }
 
     [Serializable]
-    public class UDictionary<TKey, TValue> : UDictionary, IDictionary<TKey, TValue> {
+    public class UDictionary<TKey, TValue> : UDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> {
         [SerializeField] List<TKey> keys;
+        
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => keys;
         public List<TKey> Keys => keys;
         ICollection<TKey> IDictionary<TKey, TValue>.Keys => keys;
 
         [SerializeField] List<TValue> values;
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => values;
         public List<TValue> Values => values;
         ICollection<TValue> IDictionary<TKey, TValue>.Values => values;
 

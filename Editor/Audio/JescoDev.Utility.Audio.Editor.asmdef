@@ -2,10 +2,10 @@
     "name": "JescoDev.Utility.Audio.Editor",
     "rootNamespace": "JescoDev.Utility.Audio.Editor",
     "references": [
-        "GUID:a3615b87226dba04aad398e7b890df4b",
-        "GUID:744fef7dc6b9186448b5623c4d123377",
-        "GUID:68c7bad00efaadb44978e435c3bea837",
-        "GUID:7e7716087957c7a40b53b1c1f0fd2287"
+        "JescoDev.Utility.Audio",
+        "JescoDev.Utility.EventUtility",
+        "JescoDev.Utility.MinMaxSlider",
+        "JescoDev.Utility.SmoothBrainTween"
     ],
     "includePlatforms": [
         "Editor"

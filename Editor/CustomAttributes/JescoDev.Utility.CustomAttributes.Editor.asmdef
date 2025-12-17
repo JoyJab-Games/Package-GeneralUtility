@@ -2,7 +2,7 @@
     "name": "JescoDev.Utility.CustomAttributes.Editor",
     "rootNamespace": "JescoDev.Utility.CustomAttributes.Editor",
     "references": [
-        "GUID:7654a1b9e354bc24e81001c219d692a0"
+        "JescoDev.Utility.CustomAttributes"
     ],
     "includePlatforms": [
         "Editor"

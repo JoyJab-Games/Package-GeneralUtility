@@ -2,7 +2,7 @@
     "name": "JescoDev.Utility.MinMaxSlider.Editor",
     "rootNamespace": "JescoDev.Utility.MinMaxSlider.Editor",
     "references": [
-        "GUID:68c7bad00efaadb44978e435c3bea837"
+        "JescoDev.Utility.MinMaxSlider"
     ],
     "includePlatforms": [
         "Editor"

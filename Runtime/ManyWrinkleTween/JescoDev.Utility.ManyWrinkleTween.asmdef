@@ -2,7 +2,7 @@
     "name": "JescoDev.Utility.SmoothBrainTween",
     "rootNamespace": "JescoDev.Utility.SmoothBrainTween",
     "references": [
-        "GUID:744fef7dc6b9186448b5623c4d123377"
+        "JescoDev.Utility.EventUtility"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
