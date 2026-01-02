@@ -29,7 +29,7 @@ namespace Beta.Audio {
 
             source.pitch = 1f;
             source.loop = true;
-            source.outputAudioMixerGroup = SoundManager.MusicAudioGroup;
+            source.outputAudioMixerGroup = AudioMixerTracker.MusicAudioGroup;
             source.Play();
             
         }

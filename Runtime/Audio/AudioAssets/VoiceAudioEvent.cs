@@ -34,7 +34,7 @@ namespace Beta.Audio {
             source.clip = _clip;
             source.volume = _volume;
             source.pitch = 1;
-            source.outputAudioMixerGroup = SoundManager.VoicesAudioGroup;
+            source.outputAudioMixerGroup = AudioMixerTracker.VoicesAudioGroup;
             source.Play();
         }
 

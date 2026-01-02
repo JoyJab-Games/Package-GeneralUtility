@@ -5,10 +5,10 @@ using UnityEngine.Audio;
 namespace Plugins.Audio.AudioManagers {
 
     [DefaultExecutionOrder(-100)]
-    public class SoundManager : MonoBehaviour {
+    public class AudioMixerTracker : MonoBehaviour {
     
         /// <summary>Static instance of the GameSettingsManager.</summary>
-        public static SoundManager Instance { get; private set;  }
+        public static AudioMixerTracker Instance { get; private set;  }
 
         public static AudioMixerGroup MusicAudioGroup => Instance != null ? Instance._musicAudioGroup : null;
         [SerializeField] private AudioMixerGroup _musicAudioGroup;

@@ -16,7 +16,7 @@ namespace Plugins.Audio.AudioManagers {
         public SoundSourceWrapper(GameObject source, int refId) {
             RefId = refId;
             Source = source.AddComponent<AudioSource>();
-            Source.outputAudioMixerGroup = SoundManager.MusicAudioGroup;
+            Source.outputAudioMixerGroup = AudioMixerTracker.MusicAudioGroup;
             Source.volume = 0;
         }
 
