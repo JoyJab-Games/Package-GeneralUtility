@@ -16,15 +16,10 @@ namespace JescoDev.Utility.CustomAttributes.HideAttributes {
         public bool Invert;
 
         protected HideAttribute(string conditionalSourceField) {
+            HideInInspector = true;
             ConditionalSourceField = conditionalSourceField;
-            HideInInspector = false;
         }
 
-        protected HideAttribute(string conditionalSourceField, bool hideInInspector) {
-            ConditionalSourceField = conditionalSourceField;
-            HideInInspector = hideInInspector;
-        }
-        
         protected HideAttribute(string conditionalSourceField, bool hideInInspector, bool invert) {
             ConditionalSourceField = conditionalSourceField;
             HideInInspector = hideInInspector;

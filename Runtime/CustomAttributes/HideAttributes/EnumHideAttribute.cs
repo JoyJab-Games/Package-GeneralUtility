@@ -8,19 +8,18 @@ namespace JescoDev.Utility.CustomAttributes.HideAttributes {
         /// <summary> The Value the enum field will be checked against </summary>
         public int[] ComparedEnumValue;
 
-        public EnumHideAttribute(string conditionalSourceField, int[] comparedEnumValue)
+        public EnumHideAttribute(string conditionalSourceField, params int[] comparedEnumValue)
             : base(conditionalSourceField) {
             
             ComparedEnumValue = comparedEnumValue;
         }
 
-        public EnumHideAttribute(string conditionalSourceField, int[] comparedEnumValue, bool hideInInspector) 
-            : base(conditionalSourceField, hideInInspector) {
-            
+        public EnumHideAttribute(string conditionalSourceField, bool invert, params int[] comparedEnumValue) 
+            : base(conditionalSourceField, true, invert) {
             ComparedEnumValue = comparedEnumValue;
         }
         
-        public EnumHideAttribute(string conditionalSourceField, int[] comparedEnumValue, bool hideInInspector, bool invert) 
+        public EnumHideAttribute(string conditionalSourceField, bool hideInInspector, bool invert, params int[] comparedEnumValue) 
             : base(conditionalSourceField, hideInInspector, invert) {
             
             ComparedEnumValue = comparedEnumValue;

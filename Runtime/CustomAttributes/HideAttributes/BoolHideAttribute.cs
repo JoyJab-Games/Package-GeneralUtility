@@ -6,10 +6,8 @@ namespace JescoDev.Utility.CustomAttributes.HideAttributes {
     public class BoolHideAttribute : HideAttribute {
 
         public BoolHideAttribute(string conditionalSourceField) : base(conditionalSourceField) { }
-
         public BoolHideAttribute(string conditionalSourceField, bool hideInInspector)
-            : base(conditionalSourceField, hideInInspector) { }
-        
+            : base(conditionalSourceField, hideInInspector, false) { }
         public BoolHideAttribute(string conditionalSourceField, bool hideInInspector, bool invert)
             : base(conditionalSourceField, hideInInspector, invert) { }
     }
