@@ -23,8 +23,13 @@ namespace JescoDev.Utility.SmoothBrainTween.Plugins.Runtime.SmoothBrainTween {
 
         private static ManyWrinkleTween AutoGenerateScriptInstance() {
             GameObject target = new GameObject("SmoothBrainTween");
-            DontDestroyOnLoad(target);
             return target.AddComponent<ManyWrinkleTween>();
+        }
+
+        private void Awake() {
+            if (_internalInstance != null) return;
+            _internalInstance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
         private void OnEnable() {
