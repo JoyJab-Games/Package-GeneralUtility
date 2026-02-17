@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Utility {
+namespace JescoDev.Utility.General {
     public static class EnumerableExtension {
         public static T PickRandom<T>(this IEnumerable<T> source)
             => source.PickRandom(1).Single();
